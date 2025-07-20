@@ -94,8 +94,8 @@ def main():
             print(f'Epoch {ep}, Loss: {running_loss/len(train_loader):.4f}')
 
     # 最終モデル保存
-    torch.save(model.state_dict(), 'and_restart.pth')
-    print('The model saved.')
+    #torch.save(model.state_dict(), 'and_restart.pth')
+    #print('The model saved.')
 
     # 評価
     print('Evaluation:')

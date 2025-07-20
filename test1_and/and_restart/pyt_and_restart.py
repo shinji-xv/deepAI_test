@@ -60,20 +60,25 @@ def main():
 
     # --- ここからチェックポイントのロード処理を追加 ---
     # 再開したいチェックポイントファイル名（例：and-0100.pth など）
-    resume_ckpt = os.path.join(ckpt_dir, 'and-0100.pth')
+    resume_ckpt = os.path.join(ckpt_dir, 'and-1000.pth')
     start_epoch = 1
     if os.path.exists(resume_ckpt):
         # チェックポイントが存在すればロード
         model.load_state_dict(torch.load(resume_ckpt))
         print(f'Checkpoint {resume_ckpt} loaded. Continue training from this state.')
-        # 例として100エポックごとに保存している場合、次のエポックから再開
-        start_epoch = 101
+        # ファイル名からエポック番号を自動で抽出し、次のエポックから再開
+        import re
+        match = re.search(r'and-(\d+).pth', os.path.basename(resume_ckpt))
+        if match:
+            start_epoch = int(match.group(1)) + 1
+        else:
+            start_epoch = 1
     else:
         print('No checkpoint found. Training from scratch.')
     # --- ここまで ---
 
     # 学習ループ
-    for ep in range(start_epoch, epoch+1):
+    for ep in range(start_epoch, start_epoch+epoch+1):
         model.train()  # 学習モード
         running_loss = 0.0
         for batch_x, batch_y in train_loader:
